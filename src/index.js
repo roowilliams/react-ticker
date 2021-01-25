@@ -16,6 +16,7 @@ export default class Ticker extends React.Component {
     offset: oneOfType([number, string]),
     speed: number,
     height: oneOfType([number, string]),
+    setOffset: func
   };
 
   static defaultProps = {
@@ -24,18 +25,18 @@ export default class Ticker extends React.Component {
     direction: "toLeft",
     mode: "chain",
     move: true,
-    height: undefined,
+    height: undefined
   };
   next = null;
   state = getDefaultState(this.props.offset);
-  tickerRef = this.props.tickerRef || React.createRef();
+  tickerRef = React.createRef();
 
   dOnResize = debounce(() => this.onResize(), 150);
 
   componentDidMount = () => {
     this.setState({
       width: this.tickerRef.current.offsetWidth,
-      height: this.props.height,
+      height: this.props.height
     });
     window.addEventListener("resize", this.dOnResize);
   };
@@ -45,8 +46,8 @@ export default class Ticker extends React.Component {
   };
 
   setRect = ({ index, rect, offset, nextOffset }) => {
-    this.setState((prevState) => {
-      const elements = prevState.elements.map((el) => {
+    this.setState(prevState => {
+      const elements = prevState.elements.map(el => {
         const newEl = el;
         if (el.index === index) newEl.rect = rect;
         // next element
@@ -60,7 +61,7 @@ export default class Ticker extends React.Component {
       });
       return {
         elements,
-        height: this.props.height ? prevState.height : getHighest(elements),
+        height: this.props.height ? prevState.height : getHighest(elements)
       };
     });
   };
@@ -73,21 +74,22 @@ export default class Ticker extends React.Component {
       return;
     this.setState({
       ...getDefaultState(this.props.offset, this.tickerRef.current.offsetWidth),
-      height: this.props.height,
+      height: this.props.height
     });
   };
 
-  onFinish = (id) => {
-    this.setState((prevState) => ({
-      elements: prevState.elements.filter((el) => el.id !== id),
+  onFinish = id => {
+    this.setState(prevState => ({
+      elements: prevState.elements.filter(el => el.id !== id)
     }));
   };
 
   onNext = ({ id, index, rect, nextOffset }) => {
-    this.setState((prevState) => ({
+    this.props.setOffset && this.props.setOffset(nextOffset);
+    this.setState(prevState => ({
       elements: [
         // start next element
-        ...prevState.elements.map((el) => {
+        ...prevState.elements.map(el => {
           const newEl = el;
           if (el.index === index) newEl.rect = rect;
           if (el.index === 0 || el.offset || newEl.index === index + 1) {
@@ -103,9 +105,9 @@ export default class Ticker extends React.Component {
           start: false,
           offset: nextOffset,
           rect: null,
-          prevRect: rect,
-        },
-      ],
+          prevRect: rect
+        }
+      ]
     }));
   };
 
@@ -117,11 +119,11 @@ export default class Ticker extends React.Component {
         style={{
           position: "relative",
           overflow: "hidden",
-          height: this.state.height && `${this.state.height}px`,
+          height: this.state.height && `${this.state.height}px`
         }}
       >
         {this.state.width &&
-          this.state.elements.map((el) => {
+          this.state.elements.map(el => {
             return (
               <TickerElement
                 key={el.id}
