@@ -491,7 +491,7 @@ var Ticker = function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = possibleConstructorReturn(this, (_ref = Ticker.__proto__ || Object.getPrototypeOf(Ticker)).call.apply(_ref, [this].concat(args))), _this), _this.next = null, _this.state = getDefaultState(_this.props.offset), _this.tickerRef = _this.props.tickerRef || React.createRef(), _this.dOnResize = debounce(function () {
+    return _ret = (_temp = (_this = possibleConstructorReturn(this, (_ref = Ticker.__proto__ || Object.getPrototypeOf(Ticker)).call.apply(_ref, [this].concat(args))), _this), _this.next = null, _this.state = getDefaultState(_this.props.offset), _this.tickerRef = React.createRef(), _this.dOnResize = debounce(function () {
       return _this.onResize();
     }, 150), _this.componentDidMount = function () {
       _this.setState({
@@ -544,6 +544,7 @@ var Ticker = function (_React$Component) {
           rect = _ref3.rect,
           nextOffset = _ref3.nextOffset;
 
+      _this.props.setOffset && _this.props.setOffset(nextOffset);
       _this.setState(function (prevState) {
         return {
           elements: [].concat(toConsumableArray(prevState.elements.map(function (el) {
@@ -620,7 +621,8 @@ Ticker.propTypes = {
   move: bool,
   offset: oneOfType([number, string]),
   speed: number,
-  height: oneOfType([number, string])
+  height: oneOfType([number, string]),
+  setOffset: func
 };
 Ticker.defaultProps = {
   offset: 0,
